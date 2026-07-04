@@ -8,14 +8,13 @@ can pin an exact version or track the newest.
 ## Requirements
 
 Lumide ships no license (all rights reserved), so Nix treats it as **unfree**.
-Allow unfree packages when building or running:
+The `nix run` / `nix shell` / `nix profile install` commands below need no extra
+flags: this flake builds it with `allowUnfree` already set.
 
-```sh
-export NIXPKGS_ALLOW_UNFREE=1   # and pass --impure below
-```
-
-or set `nixpkgs.config.allowUnfree = true;` (or add `lumide` to
-`allowUnfreePredicate`) in your own configuration.
+If you instead consume it through the [overlay](#use-as-an-overlay) or as a flake
+input, the package is built with *your* nixpkgs, so allow unfree there yourself,
+e.g. `nixpkgs.config.allowUnfree = true;` (or add `lumide` to
+`allowUnfreePredicate`).
 
 ## Choosing a version
 
@@ -39,18 +38,33 @@ Versions `0.2.0` through `0.14.0` are available (`0.1.0` shipped no Linux build)
 
 ```sh
 # Latest release
-nix run --impure github:CarlosMendonca/lumide-flake
+nix run github:CarlosMendonca/lumide-flake
 
 # A specific version
-nix run --impure github:CarlosMendonca/lumide-flake#lumide_0_12_0
+nix run github:CarlosMendonca/lumide-flake#lumide_0_12_0
+```
+
+## Drop into a shell
+
+Bring `lumide` onto your `PATH` in an ephemeral shell without installing it:
+
+```sh
+# Latest release
+nix shell github:CarlosMendonca/lumide-flake#lumide
+
+# A specific version
+nix shell github:CarlosMendonca/lumide-flake#lumide_0_12_0
+
+# then just:
+lumide
 ```
 
 ## Install into a profile
 
 ```sh
-nix profile install --impure github:CarlosMendonca/lumide-flake#lumide
+nix profile install github:CarlosMendonca/lumide-flake#lumide
 # or a pinned version:
-nix profile install --impure github:CarlosMendonca/lumide-flake#lumide_0_9_0
+nix profile install github:CarlosMendonca/lumide-flake#lumide_0_9_0
 ```
 
 This installs the `lumide` binary plus a desktop entry

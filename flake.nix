@@ -36,7 +36,13 @@
     // flake-utils.lib.eachSystem supportedSystems (
       system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
+        # Instantiate our own nixpkgs with allowUnfree so `nix run`/`nix build`
+        # need no NIXPKGS_ALLOW_UNFREE + --impure. Overlay consumers still use
+        # their own nixpkgs, so they set allowUnfree themselves.
+        pkgs = import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        };
 
         # `nix run .#update` regenerates data/lumide.json from the GitHub releases API.
         update = pkgs.writeShellApplication {

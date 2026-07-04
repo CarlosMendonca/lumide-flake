@@ -6,10 +6,6 @@ on:
   pull_request: {}
   workflow_dispatch: {}
 
-env:
-  # Lumide is unfree (no upstream license); allow eval/build in CI.
-  NIXPKGS_ALLOW_UNFREE: "1"
-
 jobs:
   eval:
     runs-on: ubuntu-latest
@@ -20,7 +16,7 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
       # Evaluates every lumide_* derivation + apps + overlay.
-      - run: nix flake check --impure --all-systems
+      - run: nix flake check --all-systems
 
   build-linux:
     runs-on: ubuntu-latest
@@ -32,5 +28,5 @@ jobs:
             experimental-features = nix-command flakes
       # Build the latest Lumide and confirm the wrapper exists; catches upstream
       # archive/format regressions on x86_64-linux.
-      - run: nix build --impure .#lumide --print-build-logs
+      - run: nix build .#lumide --print-build-logs
       - run: test -x result/bin/lumide

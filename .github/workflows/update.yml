@@ -16,8 +16,6 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  # Lumide is unfree (no upstream license); allow eval/build in CI.
-  NIXPKGS_ALLOW_UNFREE: "1"
   # Raise the GitHub API rate limit for the updater.
   GITHUB_TOKEN: ${{ github.token }}
 
@@ -36,12 +34,12 @@ jobs:
         run: nix run .#update
 
       - name: Sanity-check the flake still evaluates
-        run: nix flake check --impure --all-systems
+        run: nix flake check --all-systems
 
       # Build the latest Lumide against the freshly regenerated data, so a broken
       # refresh fails this job before anything is pushed.
       - name: Build latest Lumide
-        run: nix build --impure .#lumide --print-build-logs
+        run: nix build .#lumide --print-build-logs
 
       # No PR: push the refreshed data straight to main. Validation above has
       # already passed, and a push by GITHUB_TOKEN doesn't re-trigger check.yml.
