@@ -1,78 +1,51 @@
+# Builds a single Lumide package from one data/lumide.json entry.
+#
+# Lumide is a prebuilt Flutter Linux GTK3 app: a dynamically linked ELF plus
+# bundled lib/*.so. autoPatchelfHook rewrites the interpreter + RPATH against
+# nixpkgs, and wrapGAppsHook3 sets up the GTK/GApps environment.
 {
+  pkgs,
   lib,
-  stdenv,
-  stdenvNoCC,
-  fetchurl,
-  autoPatchelfHook,
-  wrapGAppsHook3,
-  makeWrapper,
-  gtk3,
-  glib,
-  pango,
-  cairo,
-  harfbuzz,
-  atk,
-  gdk-pixbuf,
-  libepoxy,
-  fontconfig,
-  libglvnd,
+  entry,
 }:
 
 let
-  # Per-system release assets. Adding a platform is a data change here plus a
-  # matching entry in `supportedSystems` in flake.nix, with no code changes needed.
-  # Note the asset naming quirk: upstream calls the arm build "arm64", not "aarch64".
-  sources = {
-    "x86_64-linux" = {
-      arch = "x86_64";
-      hash = "sha256-yZak1katWrwgEjf43pAPXl2L6Kkjhed4ktzsUI3DHbE=";
-    };
-    # "aarch64-linux" = {
-    #   arch = "arm64";
-    #   hash = "sha256-...";  # fill in once upstream publishes a Linux arm64 asset
-    # };
-  };
-
-  source =
-    sources.${stdenv.hostPlatform.system}
-      or (throw "lumide: no prebuilt asset for ${stdenv.hostPlatform.system} yet");
+  inherit (entry) version url sha256;
 in
-stdenvNoCC.mkDerivation (finalAttrs: {
+pkgs.stdenvNoCC.mkDerivation {
   pname = "lumide";
-  version = "0.14.0";
+  inherit version;
 
-  src = fetchurl {
-    url = "https://github.com/SoFluffyOS/lumide/releases/download/${finalAttrs.version}/Lumide-Linux-${finalAttrs.version}-${source.arch}.tar.gz";
-    inherit (source) hash;
-  };
+  src = pkgs.fetchurl { inherit url sha256; };
 
+  # Tarball's top-level directory.
   sourceRoot = "Lumide";
 
   nativeBuildInputs = [
-    autoPatchelfHook
-    wrapGAppsHook3
-    makeWrapper
+    pkgs.autoPatchelfHook
+    pkgs.wrapGAppsHook3
+    pkgs.makeWrapper
   ];
 
-  # autoPatchelfHook rewrites the ELF interpreter and appends these to the RPATH of
-  # the main binary and every bundled lib/*.so. The bundled plugins themselves are
-  # already found via the binary's `$ORIGIN/lib` runpath.
+  # autoPatchelfHook rewrites the ELF interpreter and appends these to the RPATH
+  # of the main binary and every bundled lib/*.so. The bundled plugins are found
+  # via the binary's `$ORIGIN/lib` runpath.
   buildInputs = [
-    gtk3
-    glib
-    pango
-    cairo
-    harfbuzz
-    atk
-    gdk-pixbuf
-    libepoxy
-    fontconfig
-    stdenv.cc.cc.lib
+    pkgs.gtk3
+    pkgs.glib
+    pkgs.pango
+    pkgs.cairo
+    pkgs.harfbuzz
+    pkgs.atk
+    pkgs.gdk-pixbuf
+    pkgs.libepoxy
+    pkgs.fontconfig
+    pkgs.stdenv.cc.cc.lib
   ];
 
   # libepoxy dlopen()s libGL/libEGL at runtime; keep it on the RPATH. On NixOS the
   # actual driver still comes from /run/opengl-driver; non-NixOS users need nixGL.
-  runtimeDependencies = [ libglvnd ];
+  runtimeDependencies = [ pkgs.libglvnd ];
 
   # libdartjni.so is the Dart<->JNI bridge; it's only dlopen'd if a JNI feature is
   # used, and the `jni` package locates a JVM at runtime (not via RPATH). Don't drag
@@ -104,6 +77,8 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     runHook postInstall
   '';
 
+  passthru = { inherit version; };
+
   meta = {
     description = "Desktop-first, GPU-accelerated code editor built with Flutter";
     homepage = "https://lumide.dev";
@@ -111,7 +86,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     # Upstream ships no LICENSE and sets no license on the repo: all rights reserved.
     license = lib.licenses.unfree;
     sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
-    platforms = builtins.attrNames sources;
+    platforms = [ entry.system ];
     mainProgram = "lumide";
   };
-})
+}

@@ -1,12 +1,12 @@
 name: update
 
-# Bumps the pinned Lumide version + hash to the latest GitHub release and, if a
-# newer release exists and still builds, commits the change directly to the default
-# branch. Runs weekly and on demand.
+# Regenerate data/lumide.json from the GitHub releases API so new Lumide releases
+# become available as packages shortly after upstream publishes them. Runs weekly
+# and on demand.
 on:
   schedule:
     - cron: "0 6 * * 1" # Mondays 06:00 UTC
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -15,33 +15,44 @@ concurrency:
   group: update
   cancel-in-progress: false
 
+env:
+  # Lumide is unfree (no upstream license); allow eval/build in CI.
+  NIXPKGS_ALLOW_UNFREE: "1"
+  # Raise the GitHub API rate limit for the updater.
+  GITHUB_TOKEN: ${{ github.token }}
+
 jobs:
   update:
     runs-on: ubuntu-latest
-    env:
-      # Lumide is unfree (no upstream license); allow eval/build in CI.
-      NIXPKGS_ALLOW_UNFREE: "1"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
 
-      - name: Bump to latest release
+      - name: Regenerate version data
+        run: nix run .#update
+
+      - name: Sanity-check the flake still evaluates
+        run: nix flake check --impure --all-systems
+
+      # Build the latest Lumide against the freshly regenerated data, so a broken
+      # refresh fails this job before anything is pushed.
+      - name: Build latest Lumide
+        run: nix build --impure .#lumide --print-build-logs
+
+      # No PR: push the refreshed data straight to main. Validation above has
+      # already passed, and a push by GITHUB_TOKEN doesn't re-trigger check.yml.
+      - name: Commit & push data changes
         run: |
-          nix run nixpkgs#nix-update -- --flake --version=stable lumide
-
-      - name: Verify it builds
-        run: |
-          nix build --impure .#lumide
-
-      - name: Commit if changed
-        run: |
-          if git diff --quiet; then
-            echo "Already up to date; nothing to commit."
+          if git diff --quiet -- data/lumide.json; then
+            echo "No new Lumide versions; nothing to push."
             exit 0
           fi
-          version="$(nix eval --raw --impure .#lumide.version)"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -am "lumide: update to ${version}"
-          git push
+          git add data/lumide.json
+          git commit -m "data: refresh Lumide versions"
+          git push origin HEAD:main

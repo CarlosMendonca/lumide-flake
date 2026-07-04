@@ -1,0 +1,80 @@
+[
+  {
+    "version": "0.10.0",
+    "system": "x86_64-linux",
+    "url": "https://github.com/SoFluffyOS/lumide/releases/download/0.10.0/Lumide-Linux-0.10.0_1-x86_64.tar.gz",
+    "sha256": "a94009727d0d861d88b138317f156fc183949161c36912e77a0725ca68f43780"
+  },
+  {
+    "version": "0.11.0",
+    "system": "x86_64-linux",
+    "url": "https://github.com/SoFluffyOS/lumide/releases/download/0.11.0/Lumide-Linux-0.11.0_1-x86_64.tar.gz",
+    "sha256": "2bc4cf5922c2833fa587ab9339b43a3c00484aa657029d83833d5f476ec36b53"
+  },
+  {
+    "version": "0.12.0",
+    "system": "x86_64-linux",
+    "url": "https://github.com/SoFluffyOS/lumide/releases/download/0.12.0/Lumide-Linux-0.12.0_1-x86_64.tar.gz",
+    "sha256": "352ab96946ecb03310b6786b0aae6983e766dbef43cce9dcbf69f08b3a021ffa"
+  },
+  {
+    "version": "0.13.0",
+    "system": "x86_64-linux",
+    "url": "https://github.com/SoFluffyOS/lumide/releases/download/0.13.0/Lumide-Linux-0.13.0_1-x86_64.tar.gz",
+    "sha256": "0e45fb9c305cacce9c9f8a2481745acd75d9f0833ce3640f3f66bc093641bc0f"
+  },
+  {
+    "version": "0.14.0",
+    "system": "x86_64-linux",
+    "url": "https://github.com/SoFluffyOS/lumide/releases/download/0.14.0/Lumide-Linux-0.14.0-x86_64.tar.gz",
+    "sha256": "c996a4d646ad5abc201237f8de900f5e5d8be8a92385e77892dcec508dc31db1"
+  },
+  {
+    "version": "0.2.0",
+    "system": "x86_64-linux",
+    "url": "https://github.com/SoFluffyOS/lumide/releases/download/0.2.0/Lumide-Linux-0.2.0_1-x86_64.tar.gz",
+    "sha256": "01b02b0e57157a18593acbf4636dd16804d00ab0a416dc6f76d51c0f167e913e"
+  },
+  {
+    "version": "0.3.0",
+    "system": "x86_64-linux",
+    "url": "https://github.com/SoFluffyOS/lumide/releases/download/0.3.0/Lumide-Linux-0.3.0_1-x86_64.tar.gz",
+    "sha256": "1b87aba2cd9f4b2a5e42979e1106cd99e7a6c9deaf7b30de8e3af7ab8795c2d1"
+  },
+  {
+    "version": "0.4.0",
+    "system": "x86_64-linux",
+    "url": "https://github.com/SoFluffyOS/lumide/releases/download/0.4.0/Lumide-Linux-0.4.0_1-x86_64.tar.gz",
+    "sha256": "003b488da5af0c580f67f2ef238025f1007670a7c1be6b9b4d31b087d59b467d"
+  },
+  {
+    "version": "0.5.0",
+    "system": "x86_64-linux",
+    "url": "https://github.com/SoFluffyOS/lumide/releases/download/0.5.0/Lumide-Linux-0.5.0_1-x86_64.tar.gz",
+    "sha256": "0dfc2aaa29dd57bd24a5da7c500b921bc9905a5bf898d6fc823804e64cf0d42d"
+  },
+  {
+    "version": "0.6.0",
+    "system": "x86_64-linux",
+    "url": "https://github.com/SoFluffyOS/lumide/releases/download/0.6.0/Lumide-Linux-0.6.0_1-x86_64.tar.gz",
+    "sha256": "17c033472343b15dab7406ff471fb07d5e4acaa4995cea168f97056f76e23b65"
+  },
+  {
+    "version": "0.7.0",
+    "system": "x86_64-linux",
+    "url": "https://github.com/SoFluffyOS/lumide/releases/download/0.7.0/Lumide-Linux-0.7.0_1-x86_64.tar.gz",
+    "sha256": "50bc9914c4c727e0fec31e690c2e9fa662a2efc0d83c523298c4a44e8277c2af"
+  },
+  {
+    "version": "0.8.0",
+    "system": "x86_64-linux",
+    "url": "https://github.com/SoFluffyOS/lumide/releases/download/0.8.0/Lumide-Linux-0.8.0_1-x86_64.tar.gz",
+    "sha256": "d190b6f1b53b8de3b755794e717fdbe0b68cb7cf7db45f94b7b897c346d1c15c"
+  },
+  {
+    "version": "0.9.0",
+    "system": "x86_64-linux",
+    "url": "https://github.com/SoFluffyOS/lumide/releases/download/0.9.0/Lumide-Linux-0.9.0_1-x86_64.tar.gz",
+    "sha256": "5ced34ab00c9df195e5e4868e91b9061d28142ae0dc034be5652ba0ceb6a7a92"
+  }
+]
