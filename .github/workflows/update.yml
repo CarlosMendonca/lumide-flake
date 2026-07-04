@@ -1,0 +1,47 @@
+name: update
+
+# Bumps the pinned Lumide version + hash to the latest GitHub release and, if a
+# newer release exists and still builds, commits the change directly to the default
+# branch. Runs weekly and on demand.
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      # Lumide is unfree (no upstream license); allow eval/build in CI.
+      NIXPKGS_ALLOW_UNFREE: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Bump to latest release
+        run: |
+          nix run nixpkgs#nix-update -- --flake --version=stable lumide
+
+      - name: Verify it builds
+        run: |
+          nix build --impure .#lumide
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet; then
+            echo "Already up to date; nothing to commit."
+            exit 0
+          fi
+          version="$(nix eval --raw --impure .#lumide.version)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "lumide: update to ${version}"
+          git push
