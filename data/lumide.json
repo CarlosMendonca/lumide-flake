@@ -114,6 +114,12 @@
     "sha256": "de7f51751ebd1317a402c97460aa9167d454d7b9664e7c360c7ec713737e6cfe"
   },
   {
+    "version": "0.25.0",
+    "system": "x86_64-linux",
+    "url": "https://github.com/SoFluffyOS/lumide/releases/download/0.25.0/Lumide-Linux-0.25.0-x86_64.tar.gz",
+    "sha256": "0a503fd141951cfd389be0387b84f48d1fa3e1d19d70e46adc0aa537c7d50418"
+  },
+  {
     "version": "0.3.0",
     "system": "x86_64-linux",
     "url": "https://github.com/SoFluffyOS/lumide/releases/download/0.3.0/Lumide-Linux-0.3.0_1-x86_64.tar.gz",
